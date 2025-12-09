@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Заказ №{{data.id}}</title>
+</head>
+<body>
+  <h1>Информация о заказе №{{data.id}}</h1>
+  <p>Дата: {{data.current_date}}</p>
+  {{#if data.order}}
+    <p>Название: {{data.order.title}}</p>
+    <p>Описание: {{data.order.description}}</p>
+    <p>Цена: {{data.order.price}}</p>
+  {{else}}
+    <p>Заказ не найден</p>
+  {{/if}}
+  <a href="/orders">Вернуться к списку</a>
+</body>
+</html>
