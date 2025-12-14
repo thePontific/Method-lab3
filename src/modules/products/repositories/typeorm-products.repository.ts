@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProductEntity } from '../../../entities/product.entity';
-import { ProductFiltersDto } from '../dto/product-filters.dto';
+import { ProductFiltersDto } from '../dto/product-filters.dto'; 
 
 @Injectable()
 export class TypeORMProductsRepository {
   constructor(
     @InjectRepository(ProductEntity)
-    private repository: Repository<ProductEntity>,
+    private readonly repository: Repository<ProductEntity>,
   ) {}
 
   async findAll(filters?: ProductFiltersDto): Promise<ProductEntity[]> {
@@ -19,9 +19,10 @@ export class TypeORMProductsRepository {
     }
 
     if (filters?.search) {
-      query.andWhere('(product.name ILIKE :search OR product.description ILIKE :search)', {
-        search: `%${filters.search}%`,
-      });
+      query.andWhere(
+        '(product.name ILIKE :search OR product.description ILIKE :search)',
+        { search: `%${filters.search}%` },
+      );
     }
 
     if (filters?.category) {
@@ -61,12 +62,18 @@ export class TypeORMProductsRepository {
     const product = this.repository.create(data);
     return await this.repository.save(product);
   }
-
-  async update(id: number, data: Partial<ProductEntity>): Promise<ProductEntity> {
+  async update(
+    id: number,
+    data: Partial<ProductEntity>,
+  ): Promise<ProductEntity> {
     await this.repository.update(id, data);
-    const updated = await this.findById(id);
-    if (!updated) throw new Error('Product not found after update');
-    return updated;
+
+    const updatedProduct = await this.findById(id);
+    if (!updatedProduct) {
+      throw new Error(`Product with id ${id} not found after update`);
+    }
+
+    return updatedProduct;
   }
 
   async softDelete(id: number): Promise<void> {

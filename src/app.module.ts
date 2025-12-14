@@ -7,19 +7,20 @@ import { ProductsModule } from './modules/products/products.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: '.env', // явно указываем путь (опционально)
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: configService.get('DB_HOST', 'localhost'),
-        port: configService.get('DB_PORT', 5432),
-        username: configService.get('DB_USERNAME', 'bmstu_user'),
-        password: configService.get('DB_PASSWORD', 'bmstu_password'),
-        database: configService.get('DB_DATABASE', 'bmstu_lab_db'),
+        host: configService.get('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get('DB_USERNAME'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: configService.get('DB_SYNCHRONIZE', 'true') === 'true',
-        logging: configService.get('DB_LOGGING', 'true') === 'true',
+        synchronize: configService.get('DB_SYNCHRONIZE') === 'true',
+        logging: configService.get('DB_LOGGING') === 'true',
       }),
       inject: [ConfigService],
     }),

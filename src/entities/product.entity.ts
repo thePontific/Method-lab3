@@ -7,7 +7,6 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
-// Трансформер decimal → number
 const numberTransformer = {
   to: (value: number) => value,
   from: (value: string | null) =>
@@ -21,6 +20,9 @@ export class ProductEntity {
 
   @Column({ length: 255 })
   name: string;
+
+  @Column({ name: 'image_url', nullable: true })
+  imageUrl?: string;
 
   @Column('text', { nullable: true })
   description: string;
